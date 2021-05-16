@@ -6,6 +6,22 @@ from ppb import Image, Scene
 
 class Tile(ppb.Sprite):
     layer = 0
+    movement_speed_factor = 1
+
+    def on_update(self, update_event, signal):
+        for p in update_event.scene.get(kind=Player):
+            if (p.position - self.position).length <= self.size:
+                self.image = Image('ceramic_tile.png')
+
+
+class Swamp(ppb.Sprite):
+    layer = 0
+    movement_speed = 0.25
+
+
+class Wall(ppb.Sprite):
+    layer = 0
+    movement_speed = 0
     def on_update(self, update_event, signal):
         for p in update_event.scene.get(kind=Player):
             if (p.position - self.position).length <= self.size:
@@ -27,7 +43,7 @@ class Player(ppb.Sprite):
 
     def on_update(self, update_event, signal):
         self.position += self.direction * self.speed * update_event.time_delta
-        #print(self.position)
+        # print(self.position)
 
     def on_key_pressed(self, key_event: KeyPressed, signal):
         if key_event.key == self.left:
@@ -54,14 +70,24 @@ def setup(scene):
     print(scene)
     scene.add(Player())
     # Build a lil' map with tile options, and a matrix to reference the tiles:
+    # tiles = [
+    #     'flat_tile.png',  # 0
+    #     'small_tile.png',  # 1
+    #     'ceramic_tile.png',  # 2
+    #     'flat_tile_tr.png',  # 3
+    #     'flat_tile_t.png',  # 4
+    #     'flat_tile_tl.png',  # 5
+    # ]
+
     tiles = [
-        'flat_tile.png',  # 0
-        'small_tile.png',  # 1
-        'ceramic_tile.png',  # 2
-        'flat_tile_tr.png',  # 3
-        'flat_tile_t.png',  # 4
-        'flat_tile_tl.png',  # 5
+        Tile(image=Image('flat_tile.png')),  # 0
+        Tile(image=Image('small_tile.png')),  # 1
+        Tile(image=Image('ceramic_tile.png')),  # 2
+        Wall(image=Image('flat_tile_tr.png')),  # 3
+        Wall(image=Image('flat_tile_t.png')),  # 4
+        Wall(image=Image('flat_tile_tl.png')),  # 5
     ]
+
     matrix = [
         [3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5],
         [0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
@@ -89,12 +115,12 @@ def setup(scene):
         x = 0
         for column in row:
             x += 1
-            scene.add(
-                Tile(
-                    position=(x-center_x, y-center_y),
-                    image=Image(tiles[column])
-                )
-            )
+            tile = tiles[column]
+            tile.position = (x - center_x, y - center_y)
+            # also tried: tile.position.x = foo # frozenInstance error.
+            scene.add(tile)
+
+
 
 ppb.run(
     setup=setup,
