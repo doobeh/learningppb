@@ -1,21 +1,7 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
 import ppb
 from ppb import keycodes
 from ppb.events import KeyPressed, KeyReleased
-from ppb.features.default_sprites import TargetSprite
 from ppb import Image
-
-from image_slicer import slice
-
-
-# tiles = []
-# tiles_sliced = slice("tiles/72x72_tiles.png", col=6, row=50)
-# for x in tiles_sliced:
-#     print(x, type(x))
 
 
 class Tile(ppb.Sprite):
@@ -23,8 +9,6 @@ class Tile(ppb.Sprite):
         for p in update_event.scene.get(kind=Player):
             if (p.position - self.position).length <= self.size:
                 self.image = Image('ceramic_tile.png')
-
-
 
 
 class Player(ppb.Sprite):
@@ -66,8 +50,9 @@ class Player(ppb.Sprite):
 
 
 def setup(scene):
-    scene.add(Player(pos=(10, 0)))
+    scene.add(Player())
 
+    # Build a lil' map with tile options, and a matrix to reference the tiles:
     tiles = [
         'flat_tile.png',
         'small_tile.png',
@@ -84,7 +69,13 @@ def setup(scene):
         [0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
         [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
         [0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
     ]
+
+    # Create sprites for tiles:
     y = 0
     center_y = len(matrix) / 2.0
     for row in matrix:
@@ -99,11 +90,5 @@ def setup(scene):
                     image=Image(tiles[column])
                 )
             )
-
-
-
-
-    ##scene.add(Tile(pos=(1, 1), image=Image('test.png')))
-
 
 ppb.run(setup=setup)
