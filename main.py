@@ -1,10 +1,11 @@
 import ppb
 from ppb import keycodes
 from ppb.events import KeyPressed, KeyReleased
-from ppb import Image
+from ppb import Image, Scene
 
 
 class Tile(ppb.Sprite):
+    layer = 0
     def on_update(self, update_event, signal):
         for p in update_event.scene.get(kind=Player):
             if (p.position - self.position).length <= self.size:
@@ -12,6 +13,7 @@ class Tile(ppb.Sprite):
 
 
 class Player(ppb.Sprite):
+    layer = 1
     image = Image('player.png')
     height = 1
     width = 1
@@ -48,18 +50,17 @@ class Player(ppb.Sprite):
             self.direction += ppb.Vector(0, 1)
 
 
-
 def setup(scene):
+    print(scene)
     scene.add(Player())
-
     # Build a lil' map with tile options, and a matrix to reference the tiles:
     tiles = [
-        'flat_tile.png', # 0
-        'small_tile.png', # 1
-        'ceramic_tile.png', # 2
-        'flat_tile_tr.png', # 3
-        'flat_tile_t.png', # 4
-        'flat_tile_tl.png', # 5
+        'flat_tile.png',  # 0
+        'small_tile.png',  # 1
+        'ceramic_tile.png',  # 2
+        'flat_tile_tr.png',  # 3
+        'flat_tile_t.png',  # 4
+        'flat_tile_tl.png',  # 5
     ]
     matrix = [
         [3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5],
@@ -95,4 +96,7 @@ def setup(scene):
                 )
             )
 
-ppb.run(setup=setup)
+ppb.run(
+    setup=setup,
+    resolution=(1024, 768)
+)
